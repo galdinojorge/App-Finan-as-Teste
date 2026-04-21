@@ -10,7 +10,7 @@ export function RecentTransactions({ transactions }: { transactions: Transaction
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base">Transações Recentes</CardTitle>
-        <Link href="/transacoes" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/dashboard/transacoes" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           Ver todas
         </Link>
       </CardHeader>

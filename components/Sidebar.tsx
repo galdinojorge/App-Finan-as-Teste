@@ -7,20 +7,23 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 
 const nav = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/transacoes', label: 'Transações', icon: List },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard/transacoes', label: 'Transações', icon: List },
 ]
+
+function useLogout() {
+  const router = useRouter()
+  return async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+}
 
 export function Sidebar() {
   const pathname = usePathname()
-  const router = useRouter()
-
-  async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
+  const handleLogout = useLogout()
 
   return (
     <aside className="hidden md:flex flex-col w-56 border-r bg-background h-screen sticky top-0 p-4">
@@ -49,12 +52,38 @@ export function Sidebar() {
       </nav>
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
       >
         <LogOut className="w-4 h-4" />
         Sair
       </button>
     </aside>
+  )
+}
+
+/* Header visível em mobile e desktop — mostra botão de logout */
+export function TopBar() {
+  const handleLogout = useLogout()
+
+  return (
+    <header className="h-14 border-b bg-background flex items-center justify-between px-4 md:px-6 shrink-0">
+      {/* Logo — visível só no mobile (desktop usa sidebar) */}
+      <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-600 text-white">
+          <TrendingUp className="w-3.5 h-3.5" />
+        </div>
+        <span className="font-semibold text-sm">Finanças</span>
+      </div>
+      <div className="hidden md:block" /> {/* spacer desktop */}
+
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors border"
+      >
+        <LogOut className="w-4 h-4" />
+        Sair
+      </button>
+    </header>
   )
 }
 
